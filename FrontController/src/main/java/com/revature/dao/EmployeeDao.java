@@ -1,48 +1,54 @@
 package com.revature.dao;
 
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
-import javax.transaction.Transaction;
+import java.util.List;
 
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import com.revature.models.Employee;
 import com.revature.util.HibernateUtil;
 
-import antlr.collections.List;
+public class EmployeeDao {
+	
+	// insert the employee object by calling the save() method from Hibernate, return the PK generated
+	public int insert(Employee e) {
+		
+		// grab the session object
+		Session ses = HibernateUtil.getSession(); // from hibernate
 
-public class EmployeeDao 
-{
-	public int insert(Employee e) 
-	{
-		Session ses = HibernateUtil.getSession();
+		// begin a tx
+		Transaction tx = ses.beginTransaction(); // import Transaction from Hibernate
 		
-		Transaction tx = (Transaction) ses.beginTransaction();
-		
+		// capture the pk returned
 		int pk = (int) ses.save(e);
 		
-		try 
-		{
-			tx.commit();
-		} 
-		catch (SecurityException | RollbackException | HeuristicMixedException | HeuristicRollbackException
-				| SystemException e1) 
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		// commit the tx
+		tx.commit();
 		
+		// return the pk
 		return pk;
 	}
-	
-	public List findAll()
-	{
+
+	// findALL() method that returns a list of Employees
+	public List<Employee> findAll() {
+		
+		// grab the session
 		Session ses = HibernateUtil.getSession();
 		
-		//List<Employee> emps = ses.createQuery("from Employee", Employee.class, )>;
-		return null;
+		// make an HQL statement 
+		List<Employee> emps  = ses.createQuery("from Employee", Employee.class).list();
+		
+		// return the list of employees
+		return emps;
 	}
-
+	
+	public boolean delete(int id) {
+		return false;
+	}
+	
+	public boolean update(Employee e) {
+		return false;
+	}
+	
+	
 }
